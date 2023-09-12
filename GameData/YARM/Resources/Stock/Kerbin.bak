@@ -1,0 +1,139 @@
+// Kerbin
+// Biomes: Ice Caps, Northern Ice Shelf, Southern Ice Shelf, Tundra, Highlands, Mountains, Grasslands,
+// Deserts, Badlands, Shores, Water
+// Abundancies: None, Scarce, VeryRare, Rare, Uncommon, Common, VeryCommon, Abundant, Inexhaustible
+
+// Surface
+
+BIOME_RESOURCE {
+	PlanetName = Kerbin
+	BiomeName = Ice Caps
+	Ice = Inexhaustible
+	Rock = VeryRare
+	Metallics = None
+	Minerals = None
+	Crystals = None
+	Petroleum = VeryRare
+}
+
+BIOME_RESOURCE {
+	PlanetName = Kerbin
+	BiomeName = Northern Ice Shelf
+	Ice = Inexhaustible
+	Rock = Scarce
+	Metallics = None
+	Minerals = None
+	Crystals = None
+	Petroleum = Scarce
+}
+
+BIOME_RESOURCE {
+	PlanetName = Kerbin
+	BiomeName = Southern Ice Shelf
+	Ice = Inexhaustible
+	Rock = Scarce
+	Metallics = None
+	Minerals = None
+	Crystals = None
+	Petroleum = Scarce
+}
+
+BIOME_RESOURCE {
+	PlanetName = Kerbin
+	BiomeName = Tundra
+	Ice = Common
+	Rock = Rare
+	Metallics = None
+	Minerals = None
+	Crystals = None
+	Petroleum = Rare
+}
+
+BIOME_RESOURCE {
+	PlanetName = Kerbin
+	BiomeName = Highlands
+	Ice = None
+	Rock = Abundant
+	Metallics = VeryRare
+	Minerals = None
+	Crystals = Scarce
+	Petroleum = None
+}
+
+BIOME_RESOURCE {
+	PlanetName = Kerbin
+	BiomeName = Mountains
+	Ice = None
+	Rock = Inexhaustible
+	Metallics = Rare
+	Minerals = None
+	Crystals = VeryRare
+	Petroleum = None
+}
+
+BIOME_RESOURCE {
+	PlanetName = Kerbin
+	BiomeName = Grasslands
+	Ice = None
+	Rock = Common
+	Metallics = None
+	Minerals = Scarce
+	Crystals = None
+	Petroleum = None
+}
+
+BIOME_RESOURCE {
+	PlanetName = Kerbin
+	BiomeName = Deserts
+	Ice = None
+	Rock = Uncommon
+	Metallics = None
+	Minerals = VeryRare
+	Crystals = None
+	Petroleum = Rare
+}
+
+BIOME_RESOURCE {
+	PlanetName = Kerbin
+	BiomeName = Badlands
+	Ice = None
+	Rock = Uncommon
+	Metallics = None
+	Minerals = Rare
+	Crystals = None
+	Petroleum = VeryRare
+}
+
+BIOME_RESOURCE {
+	PlanetName = Kerbin
+	BiomeName = Shores
+	Ice = None
+	Rock = Rare
+	Metallics = None
+	Minerals = None
+	Crystals = None
+	Petroleum = Scarce
+}
+
+BIOME_RESOURCE {
+	PlanetName = Kerbin
+	BiomeName = Water
+	Ice = None
+	Rock = Scarce
+	Metallics = None
+	Minerals = None
+	Crystals = None
+	Petroleum = VeryRare
+}
+
+// Ocean
+
+PLANETARY_RESOURCE {
+	PlanetName = Kerbin
+	Water = 
+	HydrogenPeroxide = 
+	Ammonia = 
+	LqdMethane = 
+	LqdOxygen = 
+	Kerosene = 
+}
