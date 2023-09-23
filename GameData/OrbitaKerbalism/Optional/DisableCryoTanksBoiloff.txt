@@ -1,0 +1,7 @@
+// Disable CryoTanks Boiloff
+// This will disable all cyrogenic fuel boiloff. Doesn't do anything without CryoTanks.
+// Change the file extension to ".cfg" to enable.
+
+@PART[*]:HAS[@MODULE[ModuleCryoTank]]:LAST[zzz_OrbitaKerbalism] {
+	!MODULE[ModuleCryoTank],* {}
+}

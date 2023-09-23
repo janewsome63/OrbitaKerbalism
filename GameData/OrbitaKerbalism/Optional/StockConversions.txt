@@ -1,4 +1,7 @@
-// Convert ISRUs
+// Stock Conversions
+// This will replace stock resource processors/harvesters/consumers with Orbita's. Drills, ISRUs, Fuel Cells, etc. 
+// Only works if Kerbalism isn't installed. Fuel tank patches here only work without B9PartSwitch.
+// Change the file extension to ".cfg" to enable.
 
 // Variables
 @ORBITA_VARIABLES {
@@ -7,8 +10,141 @@
 	}
 }
 
-// Stock ISRUs
-@PART[ISRU,MiniISRU,TinyISRU]:HAS[@MODULE[ModuleResourceConverter]]:NEEDS[!Kerbalism] {
+// Fuel Tanks
+// Rocket Fuel
+@PART[*]:HAS[@RESOURCE[LiquidFuel],@RESOURCE[Oxidizer]]:NEEDS[!B9PartSwitch] {
+	wetMass = #$/RESOURCE[LiquidFuel]/maxAmount$
+	@wetMass += #$/RESOURCE[Oxidizer]/maxAmount$
+	@wetMass *= #$@RESOURCE_DEFINITION[LiquidFuel]/density$
+	@RESOURCE[LiquidFuel] {
+		@name = Kerosene
+		@amount = #$/wetMass$
+		@amount *= 0.333333333
+		@amount /= #$@RESOURCE_DEFINITION[Kerosene]/density$
+		@maxAmount = #$amount$
+	}
+	@RESOURCE[Oxidizer] {
+		@name = LqdOxygen
+		@amount = #$/wetMass$
+		@amount *= 0.666666667
+		@amount /= #$@RESOURCE_DEFINITION[LqdOxygen]/density$
+		@maxAmount = #$amount$
+	}
+}
+
+// Jet Fuel
+@PART[*]:HAS[@RESOURCE[LiquidFuel],!RESOURCE[Oxidizer]]:NEEDS[!B9PartSwitch] {
+	wetMass = #$/RESOURCE[LiquidFuel]/maxAmount$
+	@wetMass *= #$@RESOURCE_DEFINITION[LiquidFuel]/density$
+	@RESOURCE[LiquidFuel] {
+		@name = Kerosene
+		@amount = #$/wetMass$
+		@amount /= #$@RESOURCE_DEFINITION[Kerosene]/density$
+		@maxAmount = #$amount$
+	}
+}
+
+// Fuel Cells
+@PART[FuelCell,FuelCellArray]:FOR[OrbitaKerbalism]:NEEDS[!Kerbalism] {
+	@MODULE[ModuleResourceConverter] {
+		@INPUT_RESOURCE:HAS[#ResourceName[LiquidFuel]] {
+			@ResourceName = Kerosene
+			@Ratio *= #$@RESOURCE_DEFINITION[LiquidFuel]/density$
+			@Ratio /= #$@RESOURCE_DEFINITION[Kerosene]/density$
+		}
+		@INPUT_RESOURCE:HAS[#ResourceName[Oxidizer]] {
+			@ResourceName = LqdOxygen
+			@Ratio *= #$@RESOURCE_DEFINITION[Oxidizer]/density$
+			@Ratio /= #$@RESOURCE_DEFINITION[LqdOxygen]/density$
+		}
+	}
+}
+
+// Drills
+@PART[*]:HAS[@MODULE[ModuleResourceHarvester]:HAS[#ResourceName[Ore]]]:FOR[OrbitaKerbalism]:NEEDS[!Kerbalism] {
+	+MODULE[ModuleResourceHarvester]:HAS[#ResourceName[Ore]] {
+		@Efficiency *= #$@RESOURCE_DEFINITION[Ore]/density$
+		@Efficiency /= #$@RESOURCE_DEFINITION[Crystals]/density$
+		@ResourceName = Crystals
+		@ConverterName = #OrbitaLoc_Drill_Crystals_ConverterName
+		@StartActionName = #OrbitaLoc_Drill_Crystals_StartActionName
+		@StopActionName = #OrbitaLoc_Drill_Crystals_StopActionName
+		@ToggleActionName = #OrbitaLoc_Drill_Crystals_ToggleActionName
+		@INPUT_RESOURCE:HAS[#ResourceName[ElectricCharge]] {
+			@Ratio *= #$@RESOURCE_DEFINITION[Crystals]/density$
+			@Ratio /= #$@RESOURCE_DEFINITION[Ore]/density$
+		}
+	}
+	+MODULE[ModuleResourceHarvester]:HAS[#ResourceName[Ore]] {
+		@Efficiency *= #$@RESOURCE_DEFINITION[Ore]/density$
+		@Efficiency /= #$@RESOURCE_DEFINITION[Ices]/density$
+		@ResourceName = Ices
+		@ConverterName = #OrbitaLoc_Drill_Ices_ConverterName
+		@StartActionName = #OrbitaLoc_Drill_Ices_StartActionName
+		@StopActionName = #OrbitaLoc_Drill_Ices_StopActionName
+		@ToggleActionName = #OrbitaLoc_Drill_Ices_ToggleActionName
+		@INPUT_RESOURCE:HAS[#ResourceName[ElectricCharge]] {
+			@Ratio *= #$@RESOURCE_DEFINITION[Ices]/density$
+			@Ratio /= #$@RESOURCE_DEFINITION[Ore]/density$
+		}
+	}
+	+MODULE[ModuleResourceHarvester]:HAS[#ResourceName[Ore]] {
+		@Efficiency *= #$@RESOURCE_DEFINITION[Ore]/density$
+		@Efficiency /= #$@RESOURCE_DEFINITION[Metallics]/density$
+		@ResourceName = Metallics
+		@ConverterName = #OrbitaLoc_Drill_Metallics_ConverterName
+		@StartActionName = #OrbitaLoc_Drill_Metallics_StartActionName
+		@StopActionName = #OrbitaLoc_Drill_Metallics_StopActionName
+		@ToggleActionName = #OrbitaLoc_Drill_Metallics_ToggleActionName
+		@INPUT_RESOURCE:HAS[#ResourceName[ElectricCharge]] {
+			@Ratio *= #$@RESOURCE_DEFINITION[Metallics]/density$
+			@Ratio /= #$@RESOURCE_DEFINITION[Ore]/density$
+		}
+	}
+	+MODULE[ModuleResourceHarvester]:HAS[#ResourceName[Ore]] {
+		@Efficiency *= #$@RESOURCE_DEFINITION[Ore]/density$
+		@Efficiency /= #$@RESOURCE_DEFINITION[Rocks]/density$
+		@ResourceName = Rocks
+		@ConverterName = #OrbitaLoc_Drill_Rocks_ConverterName
+		@StartActionName = #OrbitaLoc_Drill_Rocks_StartActionName
+		@StopActionName = #OrbitaLoc_Drill_Rocks_StopActionName
+		@ToggleActionName = #OrbitaLoc_Drill_Rocks_ToggleActionName
+		@INPUT_RESOURCE:HAS[#ResourceName[ElectricCharge]] {
+			@Ratio *= #$@RESOURCE_DEFINITION[Rocks]/density$
+			@Ratio /= #$@RESOURCE_DEFINITION[Ore]/density$
+		}
+	}
+	+MODULE[ModuleResourceHarvester]:HAS[#ResourceName[Ore]] {
+		@Efficiency *= #$@RESOURCE_DEFINITION[Ore]/density$
+		@Efficiency /= #$@RESOURCE_DEFINITION[Salts]/density$
+		@ResourceName = Salts
+		@ConverterName = #OrbitaLoc_Drill_Salts_ConverterName
+		@StartActionName = #OrbitaLoc_Drill_Salts_StartActionName
+		@StopActionName = #OrbitaLoc_Drill_Salts_StopActionName
+		@ToggleActionName = #OrbitaLoc_Drill_Salts_ToggleActionName
+		@INPUT_RESOURCE:HAS[#ResourceName[ElectricCharge]] {
+			@Ratio *= #$@RESOURCE_DEFINITION[Salts]/density$
+			@Ratio /= #$@RESOURCE_DEFINITION[Ore]/density$
+		}
+	}
+	+MODULE[ModuleResourceHarvester]:HAS[#ResourceName[Ore]] {
+		@Efficiency *= #$@RESOURCE_DEFINITION[Ore]/density$
+		@Efficiency /= #$@RESOURCE_DEFINITION[Petroleum]/density$
+		@ResourceName = Petroleum
+		@ConverterName = #OrbitaLoc_Drill_Petroleum_ConverterName
+		@StartActionName = #OrbitaLoc_Drill_Petroleum_StartActionName
+		@StopActionName = #OrbitaLoc_Drill_Petroleum_StopActionName
+		@ToggleActionName = #OrbitaLoc_Drill_Petroleum_ToggleActionName
+		@INPUT_RESOURCE:HAS[#ResourceName[ElectricCharge]] {
+			@Ratio *= #$@RESOURCE_DEFINITION[Petroleum]/density$
+			@Ratio /= #$@RESOURCE_DEFINITION[Ore]/density$
+		}
+	}
+	!MODULE[ModuleResourceHarvester]:HAS[#ResourceName[Ore]] {}
+}
+
+// ISRUs
+@PART[ISRU,MiniISRU]:HAS[@MODULE[ModuleResourceConverter]]:FOR[OrbitaKerbalism]:NEEDS[!Kerbalism] {
 	// Determine mass throughputs
 	inputMass = #$/MODULE[ModuleResourceConverter],0/INPUT_RESOURCE,0/Ratio$
 	@inputMass *= #$@RESOURCE_DEFINITION[Ore]/density$
@@ -300,6 +436,410 @@
 			@Ratio *= 1.0
 			@Ratio /= #$@RESOURCE_DEFINITION[Kerosene]/density$
 			DumpExcess = false
+			FlowMode = STAGE_PRIORITY_FLOW
+		}
+	}
+	
+	// Water Electrolysis
+	+MODULE[ModuleResourceConverter],0 {
+		@ConverterName = #OrbitaLoc_ISRU_H2OElectrolysis_ConverterName
+		@StartActionName = #OrbitaLoc_ISRU_H2OElectrolysis_StartActionName
+		@StopActionName = #OrbitaLoc_ISRU_H2OElectrolysis_StopActionName
+		@resourceOutputName = #OrbitaLoc_ISRU_H2OElectrolysis_resourceOutputName
+		unitMass = #$@RESOURCE_DEFINITION[Water]/density$
+		unitsPerSec = #$/inputMass$
+		@unitsPerSec /= #$unitMass$
+		!INPUT_RESOURCE:HAS[#ResourceName[*]] {}
+		!OUTPUT_RESOURCE:HAS[#ResourceName[*]] {}
+		INPUT_RESOURCE {
+			ResourceName = Water
+			Ratio = #$../unitsPerSec$
+			FlowMode = STAGE_PRIORITY_FLOW
+		}
+		INPUT_RESOURCE {
+			ResourceName = ElectricCharge
+			Ratio = 1 // Arbitrary, couldn't find data
+			@Ratio *= #$../unitsPerSec$
+			@Ratio *= #$@ORBITA_VARIABLES/Processing/wasteHeatRatio$
+		}
+		OUTPUT_RESOURCE {
+			ResourceName = Oxygen
+			Ratio = #$/outputMass$
+			@Ratio *= 0.8879
+			@Ratio /= #$@RESOURCE_DEFINITION[Oxygen]/density$
+			DumpExcess = true
+			FlowMode = STAGE_PRIORITY_FLOW
+		}
+		OUTPUT_RESOURCE {
+			ResourceName = Hydrogen
+			Ratio = #$/outputMass$
+			@Ratio *= 0.1119
+			@Ratio /= #$@RESOURCE_DEFINITION[Hydrogen]/density$
+			DumpExcess = false
+			FlowMode = STAGE_PRIORITY_FLOW
+		}
+	}
+
+	// Carbon Dioxide Electrolysis
+	+MODULE[ModuleResourceConverter],0 {
+		@ConverterName = #OrbitaLoc_ISRU_CO2Electrolysis_ConverterName
+		@StartActionName = #OrbitaLoc_ISRU_CO2Electrolysis_StartActionName
+		@StopActionName = #OrbitaLoc_ISRU_CO2Electrolysis_StopActionName
+		@resourceOutputName = #OrbitaLoc_ISRU_CO2Electrolysis_resourceOutputName
+		unitMass = #$@RESOURCE_DEFINITION[CarbonDioxide]/density$
+		unitsPerSec = #$/inputMass$
+		@unitsPerSec /= #$unitMass$
+		!INPUT_RESOURCE:HAS[#ResourceName[*]] {}
+		!OUTPUT_RESOURCE:HAS[#ResourceName[*]] {}
+		INPUT_RESOURCE {
+			ResourceName = CarbonDioxide
+			Ratio = #$../unitsPerSec$
+			FlowMode = STAGE_PRIORITY_FLOW
+		}
+		INPUT_RESOURCE {
+			ResourceName = ElectricCharge
+			Ratio = 1 // Arbitrary, couldn't find data
+			@Ratio *= #$../unitsPerSec$
+			@Ratio *= #$@ORBITA_VARIABLES/Processing/wasteHeatRatio$
+		}
+		OUTPUT_RESOURCE {
+			ResourceName = Oxygen
+			Ratio = #$/outputMass$
+			@Ratio *= 0.7271
+			@Ratio /= #$@RESOURCE_DEFINITION[Oxygen]/density$
+			DumpExcess = false
+			FlowMode = STAGE_PRIORITY_FLOW
+		}
+		OUTPUT_RESOURCE {
+			ResourceName = Waste
+			Ratio = #$/outputMass$
+			@Ratio *= 0.2729
+			@Ratio /= #$@RESOURCE_DEFINITION[Waste]/density$
+			DumpExcess = true
+			FlowMode = STAGE_PRIORITY_FLOW
+		}
+	}
+	
+	// Methane Pyrolysis
+	+MODULE[ModuleResourceConverter],0 {
+		@ConverterName = #OrbitaLoc_ISRU_CH4Pyrolysis_ConverterName
+		@StartActionName = #OrbitaLoc_ISRU_CH4Pyrolysis_StartActionName
+		@StopActionName = #OrbitaLoc_ISRU_CH4Pyrolysis_StopActionName
+		@resourceOutputName = #OrbitaLoc_ISRU_CH4Pyrolysis_resourceOutputName
+		unitMass = #$@RESOURCE_DEFINITION[Methane]/density$
+		unitsPerSec = #$/inputMass$
+		@unitsPerSec /= #$unitMass$
+		!INPUT_RESOURCE:HAS[#ResourceName[*]] {}
+		!OUTPUT_RESOURCE:HAS[#ResourceName[*]] {}
+		INPUT_RESOURCE {
+			ResourceName = Methane
+			Ratio = #$../unitsPerSec$
+			FlowMode = STAGE_PRIORITY_FLOW
+		}
+		INPUT_RESOURCE {
+			ResourceName = ElectricCharge
+			Ratio = 0.002768595 // kJ to heat one unit by 1730K
+			@Ratio *= #$../unitsPerSec$
+			@Ratio *= #$@ORBITA_VARIABLES/Processing/wasteHeatRatio$
+		}
+		OUTPUT_RESOURCE {
+			ResourceName = Waste
+			Ratio = #$/outputMass$
+			@Ratio *= 0.7488
+			@Ratio /= #$@RESOURCE_DEFINITION[Waste]/density$
+			DumpExcess = true
+			FlowMode = STAGE_PRIORITY_FLOW
+		}
+		OUTPUT_RESOURCE {
+			ResourceName = Hydrogen
+			Ratio = #$/outputMass$
+			@Ratio *= 0.2513
+			@Ratio /= #$@RESOURCE_DEFINITION[Hydrogen]/density$
+			DumpExcess = false
+			FlowMode = STAGE_PRIORITY_FLOW
+		}
+	}
+	
+	// Ammonia Decomposition
+	+MODULE[ModuleResourceConverter],0 {
+		@ConverterName = #OrbitaLoc_ISRU_NH3Decomposition_ConverterName
+		@StartActionName = #OrbitaLoc_ISRU_NH3Decomposition_StartActionName
+		@StopActionName = #OrbitaLoc_ISRU_NH3Decomposition_StopActionName
+		@resourceOutputName = #OrbitaLoc_ISRU_NH3Decomposition_resourceOutputName
+		unitMass = #$@RESOURCE_DEFINITION[Ammonia]/density$
+		unitsPerSec = #$/inputMass$
+		@unitsPerSec /= #$unitMass$
+		!INPUT_RESOURCE:HAS[#ResourceName[*]] {}
+		!OUTPUT_RESOURCE:HAS[#ResourceName[*]] {}
+		INPUT_RESOURCE {
+			ResourceName = Ammonia
+			Ratio = #$../unitsPerSec$
+			FlowMode = STAGE_PRIORITY_FLOW
+		}
+		INPUT_RESOURCE {
+			ResourceName = ElectricCharge
+			Ratio = 0.000635579 // kJ to heat one unit by 380K
+			@Ratio *= #$../unitsPerSec$
+			@Ratio *= #$@ORBITA_VARIABLES/Processing/wasteHeatRatio$
+		}
+		OUTPUT_RESOURCE {
+			ResourceName = Nitrogen
+			Ratio = #$/outputMass$
+			@Ratio *= 0.8224
+			@Ratio /= #$@RESOURCE_DEFINITION[Nitrogen]/density$
+			DumpExcess = true
+			FlowMode = STAGE_PRIORITY_FLOW
+		}
+		OUTPUT_RESOURCE {
+			ResourceName = Hydrogen
+			Ratio = #$/outputMass$
+			@Ratio *= 0.1776
+			@Ratio /= #$@RESOURCE_DEFINITION[Hydrogen]/density$
+			DumpExcess = false
+			FlowMode = STAGE_PRIORITY_FLOW
+		}
+	}
+	
+	// Sabatier Reactor
+	+MODULE[ModuleResourceConverter],0 {
+		@ConverterName = #OrbitaLoc_ISRU_Sabatier_ConverterName
+		@StartActionName = #OrbitaLoc_ISRU_Sabatier_StartActionName
+		@StopActionName = #OrbitaLoc_ISRU_Sabatier_StopActionName
+		@resourceOutputName = #OrbitaLoc_ISRU_Sabatier_resourceOutputName
+		co2Mass = #$@RESOURCE_DEFINITION[CarbonDioxide]/density$
+		@co2Mass *= 0.8452
+		h2Mass = #$@RESOURCE_DEFINITION[Hydrogen]/density$
+		@h2Mass *= 0.1548
+		
+		unitMass = #$co2Mass$
+		@unitMass += #$h2Mass$
+		unitsPerSec = #$/inputMass$
+		@unitsPerSec /= #$unitMass$
+		!INPUT_RESOURCE:HAS[#ResourceName[*]] {}
+		!OUTPUT_RESOURCE:HAS[#ResourceName[*]] {}
+		INPUT_RESOURCE {
+			ResourceName = CarbonDioxide
+			Ratio = #$../unitsPerSec$
+			@Ratio *= 0.8452
+			FlowMode = STAGE_PRIORITY_FLOW
+		}
+		INPUT_RESOURCE {
+			ResourceName = Hydrogen
+			Ratio = #$../unitsPerSec$
+			@Ratio *= 0.1548
+			FlowMode = STAGE_PRIORITY_FLOW
+		}
+		INPUT_RESOURCE {
+			ResourceName = ElectricCharge
+			Ratio = 0.001604833 // kJ to heat one unit by 330K
+			@Ratio *= #$../unitsPerSec$
+			@Ratio *= #$@ORBITA_VARIABLES/Processing/wasteHeatRatio$
+		}
+		OUTPUT_RESOURCE {
+			ResourceName = Water
+			Ratio = #$/outputMass$
+			@Ratio *= 0.692
+			@Ratio /= #$@RESOURCE_DEFINITION[Water]/density$
+			DumpExcess = false
+			FlowMode = STAGE_PRIORITY_FLOW
+		}
+		OUTPUT_RESOURCE {
+			ResourceName = Methane
+			Ratio = #$/outputMass$
+			@Ratio *= 0.308
+			@Ratio /= #$@RESOURCE_DEFINITION[Methane]/density$
+			DumpExcess = true
+			FlowMode = STAGE_PRIORITY_FLOW
+		}
+	}
+	
+	// Haber Processor
+	+MODULE[ModuleResourceConverter],0 {
+		@ConverterName = #OrbitaLoc_ISRU_Haber_ConverterName
+		@StartActionName = #OrbitaLoc_ISRU_Haber_StartActionName
+		@StopActionName = #OrbitaLoc_ISRU_Haber_StopActionName
+		@resourceOutputName = #OrbitaLoc_ISRU_Haber_resourceOutputName
+		n2Mass = #$@RESOURCE_DEFINITION[Nitrogen]/density$
+		@n2Mass *= 0.8224
+		h2Mass = #$@RESOURCE_DEFINITION[Hydrogen]/density$
+		@h2Mass *= 0.1776
+		
+		unitMass = #$n2Mass$
+		@unitMass += #$h2Mass$
+		unitsPerSec = #$/inputMass$
+		@unitsPerSec /= #$unitMass$
+		!INPUT_RESOURCE:HAS[#ResourceName[*]] {}
+		!OUTPUT_RESOURCE:HAS[#ResourceName[*]] {}
+		INPUT_RESOURCE {
+			ResourceName = Nitrogen
+			Ratio = #$../unitsPerSec$
+			@Ratio *= 0.8224
+			FlowMode = STAGE_PRIORITY_FLOW
+		}
+		INPUT_RESOURCE {
+			ResourceName = Hydrogen
+			Ratio = #$../unitsPerSec$
+			@Ratio *= 0.1776
+			FlowMode = STAGE_PRIORITY_FLOW
+		}
+		INPUT_RESOURCE {
+			ResourceName = ElectricCharge
+			Ratio = 0.00152596 // kJ to heat one unit by 430K
+			@Ratio *= #$../unitsPerSec$
+			@Ratio *= #$@ORBITA_VARIABLES/Processing/wasteHeatRatio$
+		}
+		OUTPUT_RESOURCE {
+			ResourceName = Ammonia
+			Ratio = #$/outputMass$
+			@Ratio *= 1.0
+			@Ratio /= #$@RESOURCE_DEFINITION[Ammonia]/density$
+			DumpExcess = false
+			FlowMode = STAGE_PRIORITY_FLOW
+		}
+	}
+	
+	// Anthraquinone Processor
+	+MODULE[ModuleResourceConverter],0 {
+		@ConverterName = #OrbitaLoc_ISRU_Anthraquinone_ConverterName
+		@StartActionName = #OrbitaLoc_ISRU_Anthraquinone_StartActionName
+		@StopActionName = #OrbitaLoc_ISRU_Anthraquinone_StopActionName
+		@resourceOutputName = #OrbitaLoc_ISRU_Anthraquinone_resourceOutputName
+		o2Mass = #$@RESOURCE_DEFINITION[Oxygen]/density$
+		@o2Mass *= 0.9409
+		h2Mass = #$@RESOURCE_DEFINITION[Hydrogen]/density$
+		@h2Mass *= 0.0591
+		
+		unitMass = #$o2Mass$
+		@unitMass += #$h2Mass$
+		unitsPerSec = #$/inputMass$
+		@unitsPerSec /= #$unitMass$
+		!INPUT_RESOURCE:HAS[#ResourceName[*]] {}
+		!OUTPUT_RESOURCE:HAS[#ResourceName[*]] {}
+		INPUT_RESOURCE {
+			ResourceName = Oxygen
+			Ratio = #$../unitsPerSec$
+			@Ratio *= 0.9409
+			FlowMode = STAGE_PRIORITY_FLOW
+		}
+		INPUT_RESOURCE {
+			ResourceName = Hydrogen
+			Ratio = #$../unitsPerSec$
+			@Ratio *= 0.0591
+			FlowMode = STAGE_PRIORITY_FLOW
+		}
+		INPUT_RESOURCE {
+			ResourceName = ElectricCharge
+			Ratio = 0.0000570832 // kJ to heat one unit by 25K
+			@Ratio *= #$../unitsPerSec$
+			@Ratio *= #$@ORBITA_VARIABLES/Processing/wasteHeatRatio$
+		}
+		OUTPUT_RESOURCE {
+			ResourceName = HydrogenPeroxide
+			Ratio = #$/outputMass$
+			@Ratio *= 1.0
+			@Ratio /= #$@RESOURCE_DEFINITION[HydrogenPeroxide]/density$
+			DumpExcess = false
+			FlowMode = STAGE_PRIORITY_FLOW
+		}
+	}
+	
+	// Hydrazine Production
+	+MODULE[ModuleResourceConverter],0 {
+		@ConverterName = #OrbitaLoc_ISRU_Hydrazine_ConverterName
+		@StartActionName = #OrbitaLoc_ISRU_Hydrazine_StartActionName
+		@StopActionName = #OrbitaLoc_ISRU_Hydrazine_StopActionName
+		@resourceOutputName = #OrbitaLoc_ISRU_Hydrazine_resourceOutputName
+		nh3Mass = #$@RESOURCE_DEFINITION[Ammonia]/density$
+		@nh3Mass *= 0.5003
+		h2o2Mass = #$@RESOURCE_DEFINITION[HydrogenPeroxide]/density$
+		@h2o2Mass *= 0.4997
+		
+		unitMass = #$nh3Mass$
+		@unitMass += #$h2o2Mass$
+		unitsPerSec = #$/inputMass$
+		@unitsPerSec /= #$unitMass$
+		!INPUT_RESOURCE:HAS[#ResourceName[*]] {}
+		!OUTPUT_RESOURCE:HAS[#ResourceName[*]] {}
+		INPUT_RESOURCE {
+			ResourceName = Ammonia
+			Ratio = #$../unitsPerSec$
+			@Ratio *= 0.5003
+			FlowMode = STAGE_PRIORITY_FLOW
+		}
+		INPUT_RESOURCE {
+			ResourceName = HydrogenPeroxide
+			Ratio = #$../unitsPerSec$
+			@Ratio *= 0.4997
+			FlowMode = STAGE_PRIORITY_FLOW
+		}
+		INPUT_RESOURCE {
+			ResourceName = ElectricCharge
+			Ratio = 0.2901806 // kJ to heat one unit by 167K
+			@Ratio *= #$../unitsPerSec$
+			@Ratio *= #$@ORBITA_VARIABLES/Processing/wasteHeatRatio$
+		}
+		OUTPUT_RESOURCE {
+			ResourceName = Water
+			Ratio = #$/outputMass$
+			@Ratio *= 0.5292
+			@Ratio /= #$@RESOURCE_DEFINITION[Water]/density$
+			DumpExcess = true
+			FlowMode = STAGE_PRIORITY_FLOW
+		}
+		OUTPUT_RESOURCE {
+			ResourceName = Hydrazine
+			Ratio = #$/outputMass$
+			@Ratio *= 0.4708
+			@Ratio /= #$@RESOURCE_DEFINITION[Hydrazine]/density$
+			DumpExcess = false
+			FlowMode = STAGE_PRIORITY_FLOW
+		}
+	}
+	
+	// Uraninite Enrichment
+	+MODULE[ModuleResourceConverter],0 {
+		@ConverterName = #OrbitaLoc_ISRU_UO2Enrichment_ConverterName
+		@StartActionName = #OrbitaLoc_ISRU_UO2Enrichment_StartActionName
+		@StopActionName = #OrbitaLoc_ISRU_UO2Enrichment_StopActionName
+		@resourceOutputName = #OrbitaLoc_ISRU_UO2Enrichment_resourceOutputName
+		unitMass = #$@RESOURCE_DEFINITION[Uraninite]/density$
+		unitsPerSec = #$/inputMass$
+		@unitsPerSec /= #$unitMass$
+		!INPUT_RESOURCE:HAS[#ResourceName[*]] {}
+		!OUTPUT_RESOURCE:HAS[#ResourceName[*]] {}
+		INPUT_RESOURCE {
+			ResourceName = Uraninite
+			Ratio = #$../unitsPerSec$
+			FlowMode = STAGE_PRIORITY_FLOW
+		}
+		INPUT_RESOURCE {
+			ResourceName = ElectricCharge
+			Ratio = 540 // 0.125kg per 9000000kJ, 0.0075/0.125 * 9000000 / 1000
+			@Ratio *= #$../unitsPerSec$
+			@Ratio *= #$@ORBITA_VARIABLES/Processing/wasteHeatRatio$
+		}
+		OUTPUT_RESOURCE {
+			ResourceName = DepletedUranium
+			Ratio = #$/outputMass$
+			@Ratio *= 0.7346
+			@Ratio /= #$@RESOURCE_DEFINITION[DepletedUranium]/density$
+			DumpExcess = false
+			FlowMode = STAGE_PRIORITY_FLOW
+		}
+		OUTPUT_RESOURCE {
+			ResourceName = EnrichedUranium
+			Ratio = #$/outputMass$
+			@Ratio *= 0.1469
+			@Ratio /= #$@RESOURCE_DEFINITION[EnrichedUranium]/density$
+			DumpExcess = false
+			FlowMode = STAGE_PRIORITY_FLOW
+		}
+		OUTPUT_RESOURCE {
+			ResourceName = Oxygen
+			Ratio = #$/outputMass$
+			@Ratio *= 0.1185
+			@Ratio /= #$@RESOURCE_DEFINITION[Oxygen]/density$
+			DumpExcess = true
 			FlowMode = STAGE_PRIORITY_FLOW
 		}
 	}
@@ -687,409 +1227,6 @@
 			FlowMode = STAGE_PRIORITY_FLOW
 		}
 	}
-	
-	// Uraninite Enrichment
-	+MODULE[ModuleResourceConverter],0 {
-		@ConverterName = #OrbitaLoc_ISRU_UO2Enrichment_ConverterName
-		@StartActionName = #OrbitaLoc_ISRU_UO2Enrichment_StartActionName
-		@StopActionName = #OrbitaLoc_ISRU_UO2Enrichment_StopActionName
-		@resourceOutputName = #OrbitaLoc_ISRU_UO2Enrichment_resourceOutputName
-		unitMass = #$@RESOURCE_DEFINITION[Uraninite]/density$
-		unitsPerSec = #$/inputMass$
-		@unitsPerSec /= #$unitMass$
-		!INPUT_RESOURCE:HAS[#ResourceName[*]] {}
-		!OUTPUT_RESOURCE:HAS[#ResourceName[*]] {}
-		INPUT_RESOURCE {
-			ResourceName = Uraninite
-			Ratio = #$../unitsPerSec$
-			FlowMode = STAGE_PRIORITY_FLOW
-		}
-		INPUT_RESOURCE {
-			ResourceName = ElectricCharge
-			Ratio = 540 // 0.125kg per 9000000kJ, 0.0075/0.125 * 9000000 / 1000
-			@Ratio *= #$../unitsPerSec$
-			@Ratio *= #$@ORBITA_VARIABLES/Processing/wasteHeatRatio$
-		}
-		OUTPUT_RESOURCE {
-			ResourceName = DepletedUranium
-			Ratio = #$/outputMass$
-			@Ratio *= 0.7346
-			@Ratio /= #$@RESOURCE_DEFINITION[DepletedUranium]/density$
-			DumpExcess = false
-			FlowMode = STAGE_PRIORITY_FLOW
-		}
-		OUTPUT_RESOURCE {
-			ResourceName = EnrichedUranium
-			Ratio = #$/outputMass$
-			@Ratio *= 0.1469
-			@Ratio /= #$@RESOURCE_DEFINITION[EnrichedUranium]/density$
-			DumpExcess = false
-			FlowMode = STAGE_PRIORITY_FLOW
-		}
-		OUTPUT_RESOURCE {
-			ResourceName = Oxygen
-			Ratio = #$/outputMass$
-			@Ratio *= 0.1185
-			@Ratio /= #$@RESOURCE_DEFINITION[Oxygen]/density$
-			DumpExcess = true
-			FlowMode = STAGE_PRIORITY_FLOW
-		}
-	}
 
-	// Carbon Dioxide Electrolysis
-	+MODULE[ModuleResourceConverter],0 {
-		@ConverterName = #OrbitaLoc_ISRU_CO2Electrolysis_ConverterName
-		@StartActionName = #OrbitaLoc_ISRU_CO2Electrolysis_StartActionName
-		@StopActionName = #OrbitaLoc_ISRU_CO2Electrolysis_StopActionName
-		@resourceOutputName = #OrbitaLoc_ISRU_CO2Electrolysis_resourceOutputName
-		unitMass = #$@RESOURCE_DEFINITION[CarbonDioxide]/density$
-		unitsPerSec = #$/inputMass$
-		@unitsPerSec /= #$unitMass$
-		!INPUT_RESOURCE:HAS[#ResourceName[*]] {}
-		!OUTPUT_RESOURCE:HAS[#ResourceName[*]] {}
-		INPUT_RESOURCE {
-			ResourceName = CarbonDioxide
-			Ratio = #$../unitsPerSec$
-			FlowMode = STAGE_PRIORITY_FLOW
-		}
-		INPUT_RESOURCE {
-			ResourceName = ElectricCharge
-			Ratio = 1 // Arbitrary, couldn't find data
-			@Ratio *= #$../unitsPerSec$
-			@Ratio *= #$@ORBITA_VARIABLES/Processing/wasteHeatRatio$
-		}
-		OUTPUT_RESOURCE {
-			ResourceName = Oxygen
-			Ratio = #$/outputMass$
-			@Ratio *= 0.7271
-			@Ratio /= #$@RESOURCE_DEFINITION[Oxygen]/density$
-			DumpExcess = false
-			FlowMode = STAGE_PRIORITY_FLOW
-		}
-		OUTPUT_RESOURCE {
-			ResourceName = Waste
-			Ratio = #$/outputMass$
-			@Ratio *= 0.2729
-			@Ratio /= #$@RESOURCE_DEFINITION[Waste]/density$
-			DumpExcess = true
-			FlowMode = STAGE_PRIORITY_FLOW
-		}
-	}
-	
-	// Water Electrolysis
-	+MODULE[ModuleResourceConverter],0 {
-		@ConverterName = #OrbitaLoc_ISRU_H2OElectrolysis_ConverterName
-		@StartActionName = #OrbitaLoc_ISRU_H2OElectrolysis_StartActionName
-		@StopActionName = #OrbitaLoc_ISRU_H2OElectrolysis_StopActionName
-		@resourceOutputName = #OrbitaLoc_ISRU_H2OElectrolysis_resourceOutputName
-		unitMass = #$@RESOURCE_DEFINITION[Water]/density$
-		unitsPerSec = #$/inputMass$
-		@unitsPerSec /= #$unitMass$
-		!INPUT_RESOURCE:HAS[#ResourceName[*]] {}
-		!OUTPUT_RESOURCE:HAS[#ResourceName[*]] {}
-		INPUT_RESOURCE {
-			ResourceName = Water
-			Ratio = #$../unitsPerSec$
-			FlowMode = STAGE_PRIORITY_FLOW
-		}
-		INPUT_RESOURCE {
-			ResourceName = ElectricCharge
-			Ratio = 1 // Arbitrary, couldn't find data
-			@Ratio *= #$../unitsPerSec$
-			@Ratio *= #$@ORBITA_VARIABLES/Processing/wasteHeatRatio$
-		}
-		OUTPUT_RESOURCE {
-			ResourceName = Oxygen
-			Ratio = #$/outputMass$
-			@Ratio *= 0.8879
-			@Ratio /= #$@RESOURCE_DEFINITION[Oxygen]/density$
-			DumpExcess = true
-			FlowMode = STAGE_PRIORITY_FLOW
-		}
-		OUTPUT_RESOURCE {
-			ResourceName = Hydrogen
-			Ratio = #$/outputMass$
-			@Ratio *= 0.1119
-			@Ratio /= #$@RESOURCE_DEFINITION[Hydrogen]/density$
-			DumpExcess = false
-			FlowMode = STAGE_PRIORITY_FLOW
-		}
-	}
-	
-	// Methane Pyrolysis
-	+MODULE[ModuleResourceConverter],0 {
-		@ConverterName = #OrbitaLoc_ISRU_CH4Pyrolysis_ConverterName
-		@StartActionName = #OrbitaLoc_ISRU_CH4Pyrolysis_StartActionName
-		@StopActionName = #OrbitaLoc_ISRU_CH4Pyrolysis_StopActionName
-		@resourceOutputName = #OrbitaLoc_ISRU_CH4Pyrolysis_resourceOutputName
-		unitMass = #$@RESOURCE_DEFINITION[Methane]/density$
-		unitsPerSec = #$/inputMass$
-		@unitsPerSec /= #$unitMass$
-		!INPUT_RESOURCE:HAS[#ResourceName[*]] {}
-		!OUTPUT_RESOURCE:HAS[#ResourceName[*]] {}
-		INPUT_RESOURCE {
-			ResourceName = Methane
-			Ratio = #$../unitsPerSec$
-			FlowMode = STAGE_PRIORITY_FLOW
-		}
-		INPUT_RESOURCE {
-			ResourceName = ElectricCharge
-			Ratio = 0.002768595 // kJ to heat one unit by 1730K
-			@Ratio *= #$../unitsPerSec$
-			@Ratio *= #$@ORBITA_VARIABLES/Processing/wasteHeatRatio$
-		}
-		OUTPUT_RESOURCE {
-			ResourceName = Waste
-			Ratio = #$/outputMass$
-			@Ratio *= 0.7488
-			@Ratio /= #$@RESOURCE_DEFINITION[Waste]/density$
-			DumpExcess = true
-			FlowMode = STAGE_PRIORITY_FLOW
-		}
-		OUTPUT_RESOURCE {
-			ResourceName = Hydrogen
-			Ratio = #$/outputMass$
-			@Ratio *= 0.2513
-			@Ratio /= #$@RESOURCE_DEFINITION[Hydrogen]/density$
-			DumpExcess = false
-			FlowMode = STAGE_PRIORITY_FLOW
-		}
-	}
-	
-	// Ammonia Decomposition
-	+MODULE[ModuleResourceConverter],0 {
-		@ConverterName = #OrbitaLoc_ISRU_NH3Decomposition_ConverterName
-		@StartActionName = #OrbitaLoc_ISRU_NH3Decomposition_StartActionName
-		@StopActionName = #OrbitaLoc_ISRU_NH3Decomposition_StopActionName
-		@resourceOutputName = #OrbitaLoc_ISRU_NH3Decomposition_resourceOutputName
-		unitMass = #$@RESOURCE_DEFINITION[Ammonia]/density$
-		unitsPerSec = #$/inputMass$
-		@unitsPerSec /= #$unitMass$
-		!INPUT_RESOURCE:HAS[#ResourceName[*]] {}
-		!OUTPUT_RESOURCE:HAS[#ResourceName[*]] {}
-		INPUT_RESOURCE {
-			ResourceName = Ammonia
-			Ratio = #$../unitsPerSec$
-			FlowMode = STAGE_PRIORITY_FLOW
-		}
-		INPUT_RESOURCE {
-			ResourceName = ElectricCharge
-			Ratio = 0.000635579 // kJ to heat one unit by 380K
-			@Ratio *= #$../unitsPerSec$
-			@Ratio *= #$@ORBITA_VARIABLES/Processing/wasteHeatRatio$
-		}
-		OUTPUT_RESOURCE {
-			ResourceName = Nitrogen
-			Ratio = #$/outputMass$
-			@Ratio *= 0.8224
-			@Ratio /= #$@RESOURCE_DEFINITION[Nitrogen]/density$
-			DumpExcess = true
-			FlowMode = STAGE_PRIORITY_FLOW
-		}
-		OUTPUT_RESOURCE {
-			ResourceName = Hydrogen
-			Ratio = #$/outputMass$
-			@Ratio *= 0.1776
-			@Ratio /= #$@RESOURCE_DEFINITION[Hydrogen]/density$
-			DumpExcess = false
-			FlowMode = STAGE_PRIORITY_FLOW
-		}
-	}
-	
-	// Sabatier Reactor
-	+MODULE[ModuleResourceConverter],0 {
-		@ConverterName = #OrbitaLoc_ISRU_Sabatier_ConverterName
-		@StartActionName = #OrbitaLoc_ISRU_Sabatier_StartActionName
-		@StopActionName = #OrbitaLoc_ISRU_Sabatier_StopActionName
-		@resourceOutputName = #OrbitaLoc_ISRU_Sabatier_resourceOutputName
-		co2Mass = #$@RESOURCE_DEFINITION[CarbonDioxide]/density$
-		@co2Mass *= 0.8452
-		h2Mass = #$@RESOURCE_DEFINITION[Hydrogen]/density$
-		@h2Mass *= 0.1548
-		
-		unitMass = #$co2Mass$
-		@unitMass += #$h2Mass$
-		unitsPerSec = #$/inputMass$
-		@unitsPerSec /= #$unitMass$
-		!INPUT_RESOURCE:HAS[#ResourceName[*]] {}
-		!OUTPUT_RESOURCE:HAS[#ResourceName[*]] {}
-		INPUT_RESOURCE {
-			ResourceName = CarbonDioxide
-			Ratio = #$../unitsPerSec$
-			@Ratio *= 0.8452
-			FlowMode = STAGE_PRIORITY_FLOW
-		}
-		INPUT_RESOURCE {
-			ResourceName = Hydrogen
-			Ratio = #$../unitsPerSec$
-			@Ratio *= 0.1548
-			FlowMode = STAGE_PRIORITY_FLOW
-		}
-		INPUT_RESOURCE {
-			ResourceName = ElectricCharge
-			Ratio = 0.001604833 // kJ to heat one unit by 330K
-			@Ratio *= #$../unitsPerSec$
-			@Ratio *= #$@ORBITA_VARIABLES/Processing/wasteHeatRatio$
-		}
-		OUTPUT_RESOURCE {
-			ResourceName = Water
-			Ratio = #$/outputMass$
-			@Ratio *= 0.692
-			@Ratio /= #$@RESOURCE_DEFINITION[Water]/density$
-			DumpExcess = false
-			FlowMode = STAGE_PRIORITY_FLOW
-		}
-		OUTPUT_RESOURCE {
-			ResourceName = Methane
-			Ratio = #$/outputMass$
-			@Ratio *= 0.308
-			@Ratio /= #$@RESOURCE_DEFINITION[Methane]/density$
-			DumpExcess = true
-			FlowMode = STAGE_PRIORITY_FLOW
-		}
-	}
-	
-	// Haber Processor
-	+MODULE[ModuleResourceConverter],0 {
-		@ConverterName = #OrbitaLoc_ISRU_Haber_ConverterName
-		@StartActionName = #OrbitaLoc_ISRU_Haber_StartActionName
-		@StopActionName = #OrbitaLoc_ISRU_Haber_StopActionName
-		@resourceOutputName = #OrbitaLoc_ISRU_Haber_resourceOutputName
-		n2Mass = #$@RESOURCE_DEFINITION[Nitrogen]/density$
-		@n2Mass *= 0.8224
-		h2Mass = #$@RESOURCE_DEFINITION[Hydrogen]/density$
-		@h2Mass *= 0.1776
-		
-		unitMass = #$n2Mass$
-		@unitMass += #$h2Mass$
-		unitsPerSec = #$/inputMass$
-		@unitsPerSec /= #$unitMass$
-		!INPUT_RESOURCE:HAS[#ResourceName[*]] {}
-		!OUTPUT_RESOURCE:HAS[#ResourceName[*]] {}
-		INPUT_RESOURCE {
-			ResourceName = Nitrogen
-			Ratio = #$../unitsPerSec$
-			@Ratio *= 0.8224
-			FlowMode = STAGE_PRIORITY_FLOW
-		}
-		INPUT_RESOURCE {
-			ResourceName = Hydrogen
-			Ratio = #$../unitsPerSec$
-			@Ratio *= 0.1776
-			FlowMode = STAGE_PRIORITY_FLOW
-		}
-		INPUT_RESOURCE {
-			ResourceName = ElectricCharge
-			Ratio = 0.00152596 // kJ to heat one unit by 430K
-			@Ratio *= #$../unitsPerSec$
-			@Ratio *= #$@ORBITA_VARIABLES/Processing/wasteHeatRatio$
-		}
-		OUTPUT_RESOURCE {
-			ResourceName = Ammonia
-			Ratio = #$/outputMass$
-			@Ratio *= 1.0
-			@Ratio /= #$@RESOURCE_DEFINITION[Ammonia]/density$
-			DumpExcess = false
-			FlowMode = STAGE_PRIORITY_FLOW
-		}
-	}
-	
-	// Anthraquinone Processor
-	+MODULE[ModuleResourceConverter],0 {
-		@ConverterName = #OrbitaLoc_ISRU_Anthraquinone_ConverterName
-		@StartActionName = #OrbitaLoc_ISRU_Anthraquinone_StartActionName
-		@StopActionName = #OrbitaLoc_ISRU_Anthraquinone_StopActionName
-		@resourceOutputName = #OrbitaLoc_ISRU_Anthraquinone_resourceOutputName
-		o2Mass = #$@RESOURCE_DEFINITION[Oxygen]/density$
-		@o2Mass *= 0.9409
-		h2Mass = #$@RESOURCE_DEFINITION[Hydrogen]/density$
-		@h2Mass *= 0.0591
-		
-		unitMass = #$o2Mass$
-		@unitMass += #$h2Mass$
-		unitsPerSec = #$/inputMass$
-		@unitsPerSec /= #$unitMass$
-		!INPUT_RESOURCE:HAS[#ResourceName[*]] {}
-		!OUTPUT_RESOURCE:HAS[#ResourceName[*]] {}
-		INPUT_RESOURCE {
-			ResourceName = Oxygen
-			Ratio = #$../unitsPerSec$
-			@Ratio *= 0.9409
-			FlowMode = STAGE_PRIORITY_FLOW
-		}
-		INPUT_RESOURCE {
-			ResourceName = Hydrogen
-			Ratio = #$../unitsPerSec$
-			@Ratio *= 0.0591
-			FlowMode = STAGE_PRIORITY_FLOW
-		}
-		INPUT_RESOURCE {
-			ResourceName = ElectricCharge
-			Ratio = 0.0000570832 // kJ to heat one unit by 25K
-			@Ratio *= #$../unitsPerSec$
-			@Ratio *= #$@ORBITA_VARIABLES/Processing/wasteHeatRatio$
-		}
-		OUTPUT_RESOURCE {
-			ResourceName = HydrogenPeroxide
-			Ratio = #$/outputMass$
-			@Ratio *= 1.0
-			@Ratio /= #$@RESOURCE_DEFINITION[HydrogenPeroxide]/density$
-			DumpExcess = false
-			FlowMode = STAGE_PRIORITY_FLOW
-		}
-	}
-	
-	// Hydrazine Production
-	+MODULE[ModuleResourceConverter],0 {
-		@ConverterName = #OrbitaLoc_ISRU_Hydrazine_ConverterName
-		@StartActionName = #OrbitaLoc_ISRU_Hydrazine_StartActionName
-		@StopActionName = #OrbitaLoc_ISRU_Hydrazine_StopActionName
-		@resourceOutputName = #OrbitaLoc_ISRU_Hydrazine_resourceOutputName
-		nh3Mass = #$@RESOURCE_DEFINITION[Ammonia]/density$
-		@nh3Mass *= 0.5003
-		h2o2Mass = #$@RESOURCE_DEFINITION[HydrogenPeroxide]/density$
-		@h2o2Mass *= 0.4997
-		
-		unitMass = #$nh3Mass$
-		@unitMass += #$h2o2Mass$
-		unitsPerSec = #$/inputMass$
-		@unitsPerSec /= #$unitMass$
-		!INPUT_RESOURCE:HAS[#ResourceName[*]] {}
-		!OUTPUT_RESOURCE:HAS[#ResourceName[*]] {}
-		INPUT_RESOURCE {
-			ResourceName = Ammonia
-			Ratio = #$../unitsPerSec$
-			@Ratio *= 0.5003
-			FlowMode = STAGE_PRIORITY_FLOW
-		}
-		INPUT_RESOURCE {
-			ResourceName = HydrogenPeroxide
-			Ratio = #$../unitsPerSec$
-			@Ratio *= 0.4997
-			FlowMode = STAGE_PRIORITY_FLOW
-		}
-		INPUT_RESOURCE {
-			ResourceName = ElectricCharge
-			Ratio = 0.2901806 // kJ to heat one unit by 167K
-			@Ratio *= #$../unitsPerSec$
-			@Ratio *= #$@ORBITA_VARIABLES/Processing/wasteHeatRatio$
-		}
-		OUTPUT_RESOURCE {
-			ResourceName = Water
-			Ratio = #$/outputMass$
-			@Ratio *= 0.5292
-			@Ratio /= #$@RESOURCE_DEFINITION[Water]/density$
-			DumpExcess = true
-			FlowMode = STAGE_PRIORITY_FLOW
-		}
-		OUTPUT_RESOURCE {
-			ResourceName = Hydrazine
-			Ratio = #$/outputMass$
-			@Ratio *= 0.4708
-			@Ratio /= #$@RESOURCE_DEFINITION[Hydrazine]/density$
-			DumpExcess = false
-			FlowMode = STAGE_PRIORITY_FLOW
-		}
-	}
-	!MODULE[ModuleResourceConverter],0 {}
+	!MODULE[ModuleResourceConverter]:HAS[@INPUT_RESOURCE:HAS[#ResourceName[Ore]]] {}
 }
