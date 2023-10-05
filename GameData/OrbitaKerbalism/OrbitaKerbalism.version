@@ -1,0 +1,10 @@
+{
+	"NAME": "OrbitaKerbalism",
+	"URL": "https://raw.githubusercontent.com/janewsome63/OrbitaKerbalism/master/GameData/OrbitaKerbalism/OrbitaKerbalism.version",
+	"DOWNLOAD": "https://github.com/janewsome63/OrbitaKerbalism/releases",
+	"CHANGE_LOG_URL": "https://github.com/janewsome63/OrbitaKerbalism/master/CHANGELOG.md",
+	"VERSION": {"MAJOR": 1, "MINOR": 0, "PATCH": 0, "BUILD": 0},
+	"KSP_VERSION": {"MAJOR": 1, "MINOR": 12, "PATCH": 0},
+	"KSP_VERSION_MIN": {"MAJOR": 1, "MINOR": 8, "PATCH": 0},
+	"KSP_VERSION_MAX": {"MAJOR": 1, "MINOR": 12, "PATCH": 9}
+}
